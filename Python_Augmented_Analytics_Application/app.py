@@ -7,6 +7,7 @@ CSV file. The generated code is then executed, and the results are displayed on
 a web page.
 """
 
+import matplotlib.pyplot as plt
 import os
 import json
 from openai import OpenAI
@@ -18,7 +19,6 @@ import sys
 import re
 import matplotlib
 matplotlib.use('Agg')
-import matplotlib.pyplot as plt
 
 # Set your OpenAI API key here or set it as an environment variable
 # Linux/macOS (bash/zsh): export OPENAI_API_KEY="your-api-key-here"
@@ -46,6 +46,7 @@ api_key = os.getenv("OPENAI_API_KEY")
 
 app = Flask(__name__)
 
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     gpt_response = ""
@@ -56,8 +57,8 @@ def index():
     if os.path.exists("./static/graphic.png"):
         os.remove("./static/graphic.png")
 
-    columns = ['Date','Year','Type','Country','Area','Location','Activity',
-               'Name','Sex','Age','Injury','Fatal', 'Time','Species']
+    columns = ['Date', 'Year', 'Type', 'Country', 'Area', 'Location', 'Activity',
+               'Name', 'Sex', 'Age', 'Injury', 'Fatal', 'Time', 'Species']
     data = pd.read_csv("./data/global-shark-attack.csv", sep=";")[columns]
 
     data_struct_desc = f"Columns: {list(data.columns)}\n\n"
@@ -84,7 +85,7 @@ def index():
                 max_tokens=300
             )
             gpt_response = response.choices[0].message.content
-            code_blocks = re.findall(r"```(?:python)?(.*?)```", 
+            code_blocks = re.findall(r"```(?:python)?(.*?)```",
                                      gpt_response, re.DOTALL)
             if code_blocks:
                 code_to_execute = code_blocks[0].strip()
@@ -130,8 +131,8 @@ def index():
 @app.route("/data")
 def data_page():
     try:
-        columns = ['Date','Year','Type','Country','Area','Location','Activity',
-            'Name','Sex','Age','Injury','Fatal', 'Time','Species']
+        columns = ['Date', 'Year', 'Type', 'Country', 'Area', 'Location', 'Activity',
+                   'Name', 'Sex', 'Age', 'Injury', 'Fatal', 'Time', 'Species']
         data = pd.read_csv("./data/global-shark-attack.csv", sep=";")[columns]
         sample = data.head(10).to_html(classes="data", index=False)
     except Exception as e:
